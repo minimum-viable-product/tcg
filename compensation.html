@@ -29,6 +29,7 @@
 <div id="table"></div>
 
 <script>
+
 var xhttp = new XMLHttpRequest();
 xhttp.open("GET",
            "https://raw.githubusercontent.com/Gear61/Tech-Career-Growth-Learning-Resources-And-Roadmaps/main/Compensation.md",
@@ -37,40 +38,49 @@ xhttp.send();
 
 
 xhttp.onload = function() {
-    var lines = this.responseText.split('\n');
-    var table = build_table(lines);
-    document.getElementById('table').innerHTML = table;
+    table.rows = this.responseText.split('\n');
+    table.refresh();
 }
 
 
-function build_table(lines) {
-    var icons = ['business', 'place', 'event',
-                 'attach_money', 'trending_up', 'add',
-                 'shield', 'school', 'shopping_cart'];
+var table = {
+    markup: '',
+    rows: [],
 
-    var table = '<table><tr>';
-    var row = lines[0].split(' | ');
+    refresh: function() {
+        markup = this.build();
+        document.getElementById('table').innerHTML = this.markup;
+    },
 
-    /* Process header row */
-    for (var i = 0; i < row.length; i++) {
-        row[i] = check_for_superscript(row[i]);
-        table += '<th><i class="material-icons">'+ icons[i] +'</i><br />'+
-                 row[i] +'</th>';
+    build: function() {
+        var icons = ['business', 'place', 'event',
+                     'attach_money', 'trending_up', 'add',
+                     'shield', 'school', 'shopping_cart'];
+
+        this.markup = '<table><tr>';
+        var row = this.rows[0].split(' | ');
+
+        /* Process header row */
+        for (var i = 0; i < row.length; i++) {
+            row[i] = check_for_superscript(row[i]);
+            this.markup += '<th><i class="material-icons">'+ icons[i] +'</i><br />'+
+                     row[i] +'</th>';
+        }
+
+        this.markup += '</tr>';
+
+        for (i = 2; i < this.rows.length; i++) {
+            this.markup += '<tr>';
+            row = this.rows[i].split(' | ');
+            for (var j = 0; j < row.length; j++)
+                this.markup += '<td>'+ row[j] +'</td>';
+            this.markup += '</tr>';
+        }
+
+        this.markup += '</table>';
+        return this;
     }
-
-    table += '</tr>';
-
-    for (i = 2; i < lines.length; i++) {
-        table += '<tr>';
-        row = lines[i].split(' | ');
-        for (var j = 0; j < row.length; j++)
-            table += '<td>'+ row[j] +'</td>';
-        table += '</tr>';
-    }
-
-    return table += '</table>';
 }
-
 
 function check_for_superscript(cell) {
     var left_bracket = cell.indexOf('[');
