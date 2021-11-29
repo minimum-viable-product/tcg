@@ -30,22 +30,24 @@
 
 <script>
 
-var xhttp = new XMLHttpRequest();
-xhttp.open("GET",
-           "https://raw.githubusercontent.com/Gear61/Tech-Career-Growth-Learning-Resources-And-Roadmaps/main/Compensation.md",
-           true);
-xhttp.send();
-
-
-xhttp.onload = function() {
+/* AJAX request for table data. */
+var ajax = new XMLHttpRequest();
+ajax.open(
+    "GET",
+    "https://raw.githubusercontent.com/Gear61/Tech-Career-Growth-Learning-Resources-And-Roadmaps/main/Compensation.md",
+    true
+);
+ajax.onload = function() {
     table.rows = this.responseText.split('\n');
     table.refresh();
-}
+};
+ajax.send();
 
 
 var table = {
     markup: '',
     rows: [],
+
 
     refresh: function() {
         markup = this.build();
@@ -90,6 +92,7 @@ function check_for_superscript(cell) {
 
     return cell;
 }
+
 </script>
 </body>
 </html>
